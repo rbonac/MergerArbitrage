@@ -1,0 +1,2 @@
+# MergerArbitrage
+Merger Arbitrage Strategy
