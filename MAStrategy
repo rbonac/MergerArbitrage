@@ -72,3 +72,38 @@ R Code
 > longshort <- spregressionlongshort$`Rp-Rf`
 > regsplongshort <- lm(longshort ~ rmrf + smb + hml)
 > stargazer(regsplongshort)
+
+VBA Code:
+
+Sub InsertColumns()
+
+    Dim UsdCols As Long
+    Dim Cnt As Long
+    
+    UsdCols = Cells.Find("*", SearchOrder:=xlByColumns, SearchDirection:=xlPrevious).column
+    For Cnt = Int(UsdCols / 2) * 2 To 2 Step -2
+        Columns(Cnt + 1).Resize(, 1).Insert
+    Next Cnt
+    
+End Sub
+
+Sub EveryOtherColumn()
+Dim rng As Range
+Dim InputRng As Range
+Dim OutRng As Range
+Dim xInterval As Integer
+xTitleId = "KutoolsforExcel"
+Set InputRng = Application.Selection
+Set InputRng = Application.InputBox("Range :", xTitleId, InputRng.Address, Type:=8)
+xInterval = Application.InputBox("Enter column interval", xTitleId, Type:=1)
+For i = 1 To InputRng.Columns.Count Step xInterval + 1
+    Set rng = InputRng.Cells(1, i)
+    If OutRng Is Nothing Then
+        Set OutRng = rng
+    Else
+        Set OutRng = Application.Union(OutRng, rng)
+    End If
+Next
+OutRng.EntireColumn.Select
+End Sub
+
