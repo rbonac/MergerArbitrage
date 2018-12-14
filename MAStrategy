@@ -1,3 +1,72 @@
+VBA Code:
+
+Sub InsertColumns()
+
+    Dim UsdCols As Long
+    Dim Cnt As Long
+    
+    UsdCols = Cells.Find("*", SearchOrder:=xlByColumns, SearchDirection:=xlPrevious).column
+    For Cnt = Int(UsdCols / 2) * 2 To 2 Step -2
+        Columns(Cnt + 1).Resize(, 1).Insert
+    Next Cnt
+    
+End Sub
+
+Sub EveryOtherColumn()
+Dim rng As Range
+Dim InputRng As Range
+Dim OutRng As Range
+Dim xInterval As Integer
+xTitleId = "KutoolsforExcel"
+Set InputRng = Application.Selection
+Set InputRng = Application.InputBox("Range :", xTitleId, InputRng.Address, Type:=8)
+xInterval = Application.InputBox("Enter column interval", xTitleId, Type:=1)
+For i = 1 To InputRng.Columns.Count Step xInterval + 1
+    Set rng = InputRng.Cells(1, i)
+    If OutRng Is Nothing Then
+        Set OutRng = rng
+    Else
+        Set OutRng = Application.Union(OutRng, rng)
+    End If
+Next
+OutRng.EntireColumn.Select
+End Sub
+
+Python Code
+
+import os
+import sys
+
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('filepath', error_bad_lines=False, index_col=False, dtype='unicode')
+
+a = np.arange(len(df.columns))
+df.columns = [a % 3, a // 3]
+df = df.stack().reset_index(drop=True)
+
+df.to_csv('TargetRussell3000stacked.csv', sep=',')
+
+print(df.head())
+
+import os
+import sys
+
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('filepath', error_bad_lines=False, index_col=False, dtype='unicode')
+
+df[['Last.Price', 'Daily.Return']] = df[['Last.Price', 'Daily.Return']].astype(float)
+
+df = df.groupby('Dates').agg({'Last.Price':'first', 'Daily.Return':['mean','sum']})
+df.columns = df.columns.map('_'.join)
+
+df.to_csv('TargetRussel3000_py.csv', sep=',')
+
+print(df.tail(20))
+
 R Code
 
 > library(readxl)
@@ -72,38 +141,17 @@ R Code
 > longshort <- spregressionlongshort$`Rp-Rf`
 > regsplongshort <- lm(longshort ~ rmrf + smb + hml)
 > stargazer(regsplongshort)
-
-VBA Code:
-
-Sub InsertColumns()
-
-    Dim UsdCols As Long
-    Dim Cnt As Long
-    
-    UsdCols = Cells.Find("*", SearchOrder:=xlByColumns, SearchDirection:=xlPrevious).column
-    For Cnt = Int(UsdCols / 2) * 2 To 2 Step -2
-        Columns(Cnt + 1).Resize(, 1).Insert
-    Next Cnt
-    
-End Sub
-
-Sub EveryOtherColumn()
-Dim rng As Range
-Dim InputRng As Range
-Dim OutRng As Range
-Dim xInterval As Integer
-xTitleId = "KutoolsforExcel"
-Set InputRng = Application.Selection
-Set InputRng = Application.InputBox("Range :", xTitleId, InputRng.Address, Type:=8)
-xInterval = Application.InputBox("Enter column interval", xTitleId, Type:=1)
-For i = 1 To InputRng.Columns.Count Step xInterval + 1
-    Set rng = InputRng.Cells(1, i)
-    If OutRng Is Nothing Then
-        Set OutRng = rng
-    Else
-        Set OutRng = Application.Union(OutRng, rng)
-    End If
-Next
-OutRng.EntireColumn.Select
-End Sub
-
+> sharpe(SP500cumreturns1$SP500, r = 0, scale = sqrt(250))
+> sharpe(SP500cumreturns1$Longshort, r = 0, scale = sqrt(250))
+> sharpe(SP500cumreturns1$Longonly, r = 0, scale = sqrt(250))
+> sharpe(Russell3000cumreturns$Russell3000, r = 0, scale = sqrt(250))
+> sharpe(SP500cumreturns1$Longshort, r = 0, scale = sqrt(250))
+> sharpe(Russell3000cumreturns$Longshort, r = 0, scale = sqrt(250))
+> sharpe(Russell3000cumreturns$Longshort, r = 0, scale = sqrt(250))
+> sharpe(Russell3000cumreturns$Longonly, r = 0, scale = sqrt(250))
+> maxdrawdown(SP500cumreturns1$SP500)
+> maxdrawdown(SP500cumreturns1$Longshort)
+> maxdrawdown(SP500cumreturns1$Longonly)
+> maxdrawdown(Russell3000cumreturns$Russell3000)
+> maxdrawdown(Russell3000cumreturns$Longshort)
+> maxdrawdown(Russell3000cumreturns$Longonly)
